@@ -1,6 +1,10 @@
-import requests
 import random
+
+import requests
+from django.core.cache import cache
+
 from swiper import config as cfg
+from common import keys
 
 
 def generate_random_number(length=6):
@@ -14,6 +18,7 @@ def send_vcode(phonenum):
     '''发送验证码'''
     # 生成一个验证码
     vcode = generate_random_number()
+    cache.set(keys.VCODE_KEY % phonenum, vcode, 180)#将vcoe写入缓存180s后过期
     print('vcode: %s' % vcode)
     # 整理参数
     params = cfg.YZX_PARAMS.copy()
