@@ -10,14 +10,14 @@ class User(models.Model):
         ('male', '女性')
     )
     LOCTION = (
-        ('bj', '北京'),
-        ('sh', '上海'),
-        ('gz', '广州'),
-        ('sz', '深圳'),
-        ('lz', '兰州'),
-        ('xa', '西安'),
-        ('cq', '重庆'),
-        ('cd', '成都')
+        ('北京', '北京'),
+        ('上海', '上海'),
+        ('广州', '广州'),
+        ('深圳', '深圳'),
+        ('兰州', '兰州'),
+        ('西安', '西安'),
+        ('重庆', '重庆'),
+        ('成都', '成都')
     )
     phonenum = models.CharField(max_length=16, unique=True, verbose_name='手机号')
     nickname = models.CharField(max_length=32, verbose_name='昵称')
