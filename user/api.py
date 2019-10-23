@@ -2,8 +2,8 @@ from urllib.parse import urlencode
 
 from django.shortcuts import redirect
 from django.core.cache import cache
-from django.http import JsonResponse
 
+from libs.http import render_json
 from swiper import config as cfg
 from common import keys
 from common import errors
@@ -17,7 +17,7 @@ def get_vcode(request):
     '''获取验证码接口'''
     phonenum = request.GET.get('phonenum')
     is_success = logics.send_vcode(phonenum)
-    return JsonResponse({'code': 0, 'data': is_success})
+    return render_json(is_success)
 
 
 def submit_vcode(request):
@@ -30,7 +30,7 @@ def submit_vcode(request):
 
     # 检查验证码是否过期
     if cached_vcoed == None:
-        return JsonResponse({'code': errors.VCODE_EXPIREO, 'data': None})
+        return render_json(data=None, code=errors.VCODE_EXPIREO)
 
     if cached_vcoed == vcode:
         # 先取出用户,如果存在直接取出,如果不存在直接创建
@@ -41,9 +41,9 @@ def submit_vcode(request):
 
         # 执行登录流程
         request.session['uid'] = user.id
-        return JsonResponse({'code': 0, 'data': user.to_dict()})
+        return render_json(user.to_dict())
     else:
-        return JsonResponse({'code': errors.VCODE_ERR, 'data': None})
+        return render_json(code=errors.VCODE_ERR)
 
 
 def weibo_authorize(request):
@@ -60,7 +60,7 @@ def wb_callback(request):
 
     # 检查 token是否有效
     if access_token is None:
-        return JsonResponse({'code': errors.WB_AUTH_ERR, 'data': None})
+        return render_json(code=errors.WB_AUTH_ERR)
 
     # 获取微博用户数据
     user_info = logics.get_wb_user_info(access_token, wb_uid)
@@ -73,4 +73,4 @@ def wb_callback(request):
 
     # 执行登录流程
     request.session['uid'] = user.id
-    return JsonResponse({'code': 0, 'data': user.to_dict()})
+    return render_json(user.to_dict())
