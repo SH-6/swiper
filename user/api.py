@@ -74,3 +74,21 @@ def wb_callback(request):
     # 执行登录流程
     request.session['uid'] = user.id
     return render_json(user.to_dict())
+
+
+def get_profile(request):
+    '''获取个人资料'''
+    user = request.user
+    return render_json()
+
+
+def set_profile(request):
+    '''修改个人资料'''
+    user = request.user
+    return render_json()
+
+
+def upload_avatar(request):
+    '''上传个人资料'''
+    user = request.user
+    return render_json()
