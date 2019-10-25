@@ -27,7 +27,7 @@ class User(models.Model):
     location = models.CharField(max_length=8, choices=LOCTION, verbose_name='常居地')
 
     @property
-    def my_profile(self):
+    def profile(self):
         '''获取我的个人资料'''
         if not hasattr(self, '_profile'):  # 检查是否创建过_profile
             # 动态为self添加 profile属性
@@ -50,7 +50,7 @@ class Profile(models.Model):
     '''用户资料'''
     SEX = (
         ('male', '男性'),
-        ('male', '女性')
+        ('female', '女性')
     )
     LOCTION = (
         ('北京', '北京'),
