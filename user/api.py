@@ -10,6 +10,7 @@ from common import errors
 
 from user import logics
 from user.models import User
+from user.forms import ProfileForm
 
 
 # Create your views here.
@@ -74,3 +75,29 @@ def wb_callback(request):
     # 执行登录流程
     request.session['uid'] = user.id
     return render_json(user.to_dict())
+
+
+def get_profile(request):
+    '''获取个人资料'''
+    profile_data = request.user.profile.to_dict()
+    return render_json(profile_data)
+
+
+def set_profile(request):
+    '''修改个人资料'''
+    form = ProfileForm(request.POST)
+    # 数据检查
+    if form.is_valid():
+        profile = form.save(commit=False) #通过Form表单创建出model对象,但并不在数据库中创建
+        profile.id = request.user.id #给profile设置id
+        profile.save() #保存
+        return render_json(profile.to_dict())
+    else:
+        return render_json(data=form.errors, code=errors.PROFILE_ERR)
+
+
+
+
+def upload_avatar(request):
+    '''上传个人资料'''
+    return render_json()
