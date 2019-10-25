@@ -78,8 +78,8 @@ def wb_callback(request):
 
 def get_profile(request):
     '''获取个人资料'''
-    user = request.user
-    return render_json()
+    profile_data = request.user.profile.to_dict()
+    return render_json(profile_data)
 
 
 def set_profile(request):
