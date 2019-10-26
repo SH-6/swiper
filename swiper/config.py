@@ -41,3 +41,9 @@ WB_USER_SHOW_PARAMS = {
     'access_token': None,
     'uid': None
 }
+
+# 七牛云配置
+QN_ACCESS_KEY = 'dUwTDiMpmk2FFgTS232iGz--wJQ4HZRPAceZ8nYJ'
+QN_SECRET_KEY = 'D6hhvBhQDIPy0hlB7R4jSTowtSeW_AW0-9zZZ_AL'
+QN_BUCKET = 'zz0000'
+QN_BASE_URL = 'http://prl9noner.bkt.clouddn.com'

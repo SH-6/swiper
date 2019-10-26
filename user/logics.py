@@ -1,9 +1,13 @@
+import os
 import random
 
 import requests
 from django.core.cache import cache
+from django.conf import settings
 
 from swiper import config as cfg
+from libs.qn_cloud import upload_to_qn
+from worker import celery_app
 from common import keys
 
 
@@ -76,3 +80,28 @@ def get_wb_user_info(access_token, wb_uid):
         'location': location,
         'avatar': avatar
     }
+
+
+def save_avatar(uid, upload_file):
+    '''将上传的文件保存到硬盘上'''
+    filename = 'avatar-%s' % uid
+    filepath = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(filepath, 'wb') as new_file:
+        for chunk in upload_file.chunks():
+            new_file.write(chunk)
+    return filepath, filename
+
+
+@celery_app.task
+def upload_avatar(user, upload_file):
+    '''保存用户头像'''
+    # 将文件保存到本地
+    filepath, filename = save_avatar(user.id, upload_file)
+    # 将文件上传到七牛云
+    file_url = upload_to_qn(filepath, filename)
+    # 保存文件链接
+    user.avatar = file_url
+    user.save()
+
+    # 删除本地文件
+    os.system('rm -f %s' % filepath)
