@@ -7,6 +7,7 @@ from django.conf import settings
 
 from swiper import config as cfg
 from libs.qn_cloud import upload_to_qn
+from worker import celery_app
 from common import keys
 
 
@@ -91,6 +92,7 @@ def save_avatar(uid, upload_file):
     return filepath, filename
 
 
+@celery_app.task
 def upload_avatar(user, upload_file):
     '''保存用户头像'''
     # 将文件保存到本地
