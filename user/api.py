@@ -88,16 +88,16 @@ def set_profile(request):
     form = ProfileForm(request.POST)
     # 数据检查
     if form.is_valid():
-        profile = form.save(commit=False) #通过Form表单创建出model对象,但并不在数据库中创建
-        profile.id = request.user.id #给profile设置id
-        profile.save() #保存
+        profile = form.save(commit=False)  # 通过Form表单创建出model对象,但并不在数据库中创建
+        profile.id = request.user.id  # 给profile设置id
+        profile.save()  # 保存
         return render_json(profile.to_dict())
     else:
         return render_json(data=form.errors, code=errors.PROFILE_ERR)
 
 
-
-
 def upload_avatar(request):
     '''上传个人资料'''
+    avatar = request.FILES.get('avatar')
+    logics.upload_avatar.delay(request.user, avatar)
     return render_json()
