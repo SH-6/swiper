@@ -94,7 +94,7 @@ def save_avatar(uid, upload_file):
 def upload_avatar(user, upload_file):
     '''保存用户头像'''
     # 将文件保存到本地
-    filepath, filename = save_avatar(upload_file)
+    filepath, filename = save_avatar(user.id, upload_file)
     # 将文件上传到七牛云
     file_url = upload_to_qn(filepath, filename)
     # 保存文件链接
