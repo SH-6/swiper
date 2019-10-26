@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 # from django.contrib import admin
 from user import api as user_api
+from social import api as social_api
 
 urlpatterns = [
     url(r'^api/user/get_vcode', user_api.get_vcode),
@@ -27,5 +28,14 @@ urlpatterns = [
 
     url(r'^api/user/weibo/auth', user_api.weibo_authorize),
     url(r'^api/user/weibo/callback', user_api.wb_callback),
+
+    # 社交接口
+    url(r'^api/social/rcmd_users', social_api.rcmd_users),
+    url(r'^api/social/like', social_api.like),
+    url(r'^api/social/superlike', social_api.superlike),
+    url(r'^api/social/dislike', social_api.dislike),
+    url(r'^api/social/rewind', social_api.rewind),
+    url(r'^api/social/show_liked_me', social_api.show_liked_me),
+    url(r'^api/social/friends', social_api.friends),
 
 ]
