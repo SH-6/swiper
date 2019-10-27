@@ -15,16 +15,16 @@ def rcmd_users(request):
 
 def like(request):
     '''喜欢'''
-    sid = request.POST.get('sid')
-    logics.like_someone(request.user,sid)
-    return render_json()
+    sid = int(request.POST.get('sid'))
+    is_matched = logics.like_someone(request.user, sid)
+    return render_json({'is_matched': is_matched})
 
 
 def superlike(request):
     '''超级喜欢'''
-    sid = request.POST.get('sid')
-    logics.superlike_someone(request.user,sid)
-    return render_json()
+    sid = int(request.POST.get('sid'))
+    is_matched = logics.superlike_someone(request.user, sid)
+    return render_json({'is_matched': is_matched})
 
 
 def dislike(request):

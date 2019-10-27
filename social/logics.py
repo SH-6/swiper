@@ -2,6 +2,7 @@ import datetime
 
 from user.models import User
 from social.models import Swiped
+from social.models import Friend
 
 
 def get_rmcd_users(user):
@@ -24,10 +25,25 @@ def get_rmcd_users(user):
     return rcmd_user_list
 
 
-def like_someone(user,sid):
+def like_someone(user, sid):
     '''喜欢了某人'''
-    Swiped.objects.create('')
+    Swiped.swipe(user.id, sid, 'like')  # 添加了滑动记录
 
-def superlike_someone(user,sid):
+    # 检查是否互相喜欢过
+    if Swiped.is_like_me(user.id, sid):
+        Friend.make_friends(user.id, sid)  # 创建好友关系
+        return True
+    else:
+        return False
+
+
+def superlike_someone(user, sid):
     '''超级喜欢了某人'''
+    Swiped.swipe(user.id, sid, 'like')  # 添加了滑动记录
 
+    # 检查是否互相喜欢过
+    if Swiped.is_like_me(user.id, sid):
+        Friend.make_friends(user.id, sid)  # 创建好友关系
+        return True
+    else:
+        return False
