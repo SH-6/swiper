@@ -18,11 +18,17 @@ class UserAuthMiddleware(MiddlewareMixin):
         if request.path in self.URL_WHITE_LIST:
             return
 
-        #通过session检测用户登录状态
+        # 通过session检测用户登录状态
         uid = request.session.get('uid')
         if uid is None:
             # 如果用户未登录
-            return render_json(code=errors.LOGIN_REQUIRED)
+            return render_json(code=errors.LoginRequired.code)
         else:
-            #动态为request添加user属性
+            # 动态为request添加user属性
             request.user = User.objects.get(id=uid)
+
+
+class LogicErrMiddleware(MiddlewareMixin):
+    def process_exception(self, request, exception):
+        if isinstance(exception, errors.LogicError):
+            return render_json(data=exception.data, code=exception.code)

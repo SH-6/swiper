@@ -31,8 +31,7 @@ def submit_vcode(request):
 
     # 检查验证码是否过期
     if cached_vcoed == None:
-        return render_json(data=None, code=errors.VCODE_EXPIREO)
-
+        return errors.VcodeExpired
     if cached_vcoed == vcode:
         # 先取出用户,如果存在直接取出,如果不存在直接创建
         try:
@@ -44,7 +43,7 @@ def submit_vcode(request):
         request.session['uid'] = user.id
         return render_json(user.to_dict())
     else:
-        return render_json(code=errors.VCODE_ERR)
+        return errors.VcodeErr
 
 
 def weibo_authorize(request):
@@ -61,7 +60,7 @@ def wb_callback(request):
 
     # 检查 token是否有效
     if access_token is None:
-        return render_json(code=errors.WB_AUTH_ERR)
+        return errors.WbAuthErr
 
     # 获取微博用户数据
     user_info = logics.get_wb_user_info(access_token, wb_uid)
@@ -93,7 +92,7 @@ def set_profile(request):
         profile.save()  # 保存
         return render_json(profile.to_dict())
     else:
-        return render_json(data=form.errors, code=errors.PROFILE_ERR)
+        raise errors.ProfileErr(form.errors)
 
 
 def upload_avatar(request):

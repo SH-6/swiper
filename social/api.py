@@ -1,21 +1,30 @@
 from django.shortcuts import render
 
 from libs.http import render_json
+from social import logics
+
 
 # Create your views here.
 
 def rcmd_users(request):
     '''获取推荐用户'''
-    
-    return
+    rcmd_user_list = logics.get_rmcd_users(request.user)
+    result = [user.to_dict() for user in rcmd_user_list]
+    return render_json(result)
 
 
 def like(request):
-    return
+    '''喜欢'''
+    sid = request.POST.get('sid')
+    logics.like_someone(request.user,sid)
+    return render_json()
 
 
 def superlike(request):
-    return
+    '''超级喜欢'''
+    sid = request.POST.get('sid')
+    logics.superlike_someone(request.user,sid)
+    return render_json()
 
 
 def dislike(request):

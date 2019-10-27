@@ -1,5 +1,7 @@
 from django.db import models
 
+from common import errors
+
 
 # Create your models here.
 
@@ -11,5 +13,12 @@ class Swiped(models.Model):
     )
     uid = models.IntegerField(verbose_name='滑动者ID')
     sid = models.IntegerField(verbose_name='被滑动者ID')
-    stype = models.IntegerField(max_length=16, choices=STYPE, verbose_name='滑动类型')
+    stype = models.CharField(max_length=16, choices=STYPE, verbose_name='滑动类型')
     stime = models.DateTimeField(verbose_name='滑动时间')
+
+    @classmethod
+    def swipe(cls, uid, sid, stype):
+        '''滑动操作'''
+        if stype not in ['superlike', 'like', 'dislike']:
+            raise errors.StypeErr
+        cls.objects.create()
