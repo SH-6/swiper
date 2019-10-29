@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Q
 from common import errors
 
 
@@ -50,6 +50,7 @@ class Friend(models.Model):
 
     @classmethod
     def make_friends(cls, uid1, uid2):
+        '''建立好友关系'''
         uid1, uid2 = (uid2, uid1) if uid1 > uid2 else (uid1, uid2)
         cls.objects.get_or_create(uid1=uid1, uid2=uid2)
         return True
@@ -65,3 +66,15 @@ class Friend(models.Model):
         '''绝交'''
         uid1, uid2 = (uid2, uid1) if uid1 > uid2 else (uid1, uid2)
         cls.objects.filter(uid1=uid1, uid2=uid2).delete()
+
+    @classmethod
+    def my_friends(cls, uid):
+        '''获取我的好友'''
+
+        query_condition = Q(uid1=uid) | Q(uid2=uid)
+        friends = cls.objects.filter(query_condition)
+        friend_id_list = []
+        for frd in friends:
+            friend_id = frd.uid1 if frd.uid1 != uid else frd.uid2
+            friend_id_list.append(friend_id)
+            return friend_id_list

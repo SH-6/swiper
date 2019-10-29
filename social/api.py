@@ -3,6 +3,7 @@ from django.shortcuts import render
 from libs.http import render_json
 from social import logics
 from social.models import Swiped
+from social.models import Friend
 from user.models import User
 
 
@@ -43,11 +44,13 @@ def rewind(request):
 
 
 def show_liked_me(request):
-    uid_list = Swiped.who_like_me(request.user.id)
-    users = User.objects.filter(id__in=uid_list)
-    users_info = [u.to_dict() for u in users]
-    return render_json(users_info)
+    users_info = logics.who_like_me(request.user)
+    return render_json()
 
 
 def friends(request):
-    return
+    '''查看我的好友'''
+    friend_id_list = Friend.my_friends(request.user.id)
+    all_my_friends = User.objects.filter(id__in=friend_id_list)
+    friends_info = [frd.to_dict() for frd in all_my_friends]
+    return render_json(friends_info)
