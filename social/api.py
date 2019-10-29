@@ -2,6 +2,8 @@ from django.shortcuts import render
 
 from libs.http import render_json
 from social import logics
+from social.models import Swiped
+from user.models import User
 
 
 # Create your views here.
@@ -28,15 +30,23 @@ def superlike(request):
 
 
 def dislike(request):
-    return
+    '''不喜欢'''
+    sid = int(request.POST.get('sid'))
+    Swiped.swipe(request.user.id, sid, 'dislike')
+    return render_json()
 
 
 def rewind(request):
-    return
+    '''反悔'''
+    logics.rewind_last_swiped(request.user)
+    return render_json()
 
 
 def show_liked_me(request):
-    return
+    uid_list = Swiped.who_like_me(request.user.id)
+    users = User.objects.filter(id__in=uid_list)
+    users_info = [u.to_dict() for u in users]
+    return render_json(users_info)
 
 
 def friends(request):

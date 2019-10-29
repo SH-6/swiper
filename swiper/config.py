@@ -1,4 +1,8 @@
-'''程序及第三方平台的配置'''
+'''程序逻辑及第三方平台的配置'''
+
+DAILY_REWIND_TIMES = 3
+LAST_SWIPED_SECONDS = 300
+
 
 # 云之讯短信平台配置
 YZX_API = 'https://open.ucpaas.com/ol/sms/sendsms'

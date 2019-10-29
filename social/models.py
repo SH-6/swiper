@@ -16,6 +16,9 @@ class Swiped(models.Model):
     stype = models.CharField(max_length=16, choices=STYPE, verbose_name='滑动类型')
     stime = models.DateTimeField(auto_now_add=True, verbose_name='滑动时间')
 
+    class Meta:
+        ordering = ['stime']
+
     @classmethod
     def swipe(cls, uid, sid, stype):
         '''滑动操作'''
@@ -33,6 +36,13 @@ class Swiped(models.Model):
                            sid=sid,
                            stype__in=['superlike', 'like']).exists()
 
+    @classmethod
+    def who_like_me(cls, uid, num=50):
+        swiped_list = cls.objects.filter(sid=uid,
+                                         stype__in=['superlike', 'like']
+                                         ).order_by('-stime')[:num]
+        return swiped_list
+
 
 class Friend(models.Model):
     uid1 = models.IntegerField()
@@ -43,3 +53,15 @@ class Friend(models.Model):
         uid1, uid2 = (uid2, uid1) if uid1 > uid2 else (uid1, uid2)
         cls.objects.get_or_create(uid1=uid1, uid2=uid2)
         return True
+
+    @classmethod
+    def is_friends(cls, uid1, uid2):
+        '''检查两人是否是好友'''
+        uid1, uid2 = (uid2, uid1) if uid1 > uid2 else (uid1, uid2)
+        return cls.objects.filter(uid1=uid1, uid2=uid2).exists()
+
+    @classmethod
+    def break_off(cls, uid1, uid2):
+        '''绝交'''
+        uid1, uid2 = (uid2, uid1) if uid1 > uid2 else (uid1, uid2)
+        cls.objects.filter(uid1=uid1, uid2=uid2).delete()

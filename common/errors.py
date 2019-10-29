@@ -31,3 +31,6 @@ WbAuthErr = gen_logic_err('WbAuthErr', 1002)  # 微博认证错误
 LoginRequired = gen_logic_err('LoginRequired', 1003)  # 需要先登录
 ProfileErr = gen_logic_err('ProfileErr', 1004)  # 提交的个人资料有误
 StypeErr = gen_logic_err('StypeErr', 1005)  # 滑动类型错误
+NotFoundSwiped = gen_logic_err('NotFoundSwiped', 1006)  #没有找到
+LastSwipedTimeout = gen_logic_err('LastSwipedTimeout', 1007)  # 上一次滑动已超时
+RewindTimesLimit = gen_logic_err('RewindTimesLimit', 1008)  # 反悔次数达到上限
