@@ -3,7 +3,7 @@ from django.db.models import Q
 from common import errors
 
 
-# Create your models here.
+
 
 class Swiped(models.Model):
     STYPE = (

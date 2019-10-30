@@ -3,7 +3,7 @@ from datetime import date, datetime
 from django.db import models
 from vip.models import Vip
 
-# Create your models here.
+
 class User(models.Model):
     SEX = (
         ('male', '男性'),
