@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.db import models
-
+from vip.models import Vip
 
 # Create your models here.
 class User(models.Model):
@@ -26,6 +26,10 @@ class User(models.Model):
     avatar = models.CharField(max_length=256, verbose_name='个人形象')
     location = models.CharField(max_length=8, choices=LOCTION, verbose_name='常居地')
 
+    # 用户会员记录
+    vip_id = models.IntegerField(default=1, verbose_name='VIP 的 ID')
+    vip_end_date = models.DateField(default=date(1970, 1, 1), verbose_name='会员结束时间')
+
     @property
     def profile(self):
         '''获取我的个人资料'''
@@ -33,6 +37,22 @@ class User(models.Model):
             # 动态为self添加 profile属性
             self._profile, _ = Profile.objects.get_or_create(id=self.id)
         return self._profile
+
+    @property
+    def vip(self):
+        '''用户对应的 VIP'''
+        if not hasattr(self, '_vip'):  # 检查是否创建过_vip
+            # 动态为self添加 _vip属性
+            self._vip, _ = Vip.objects.get(id=self.id)
+        return self._vip
+
+    def vip_remain_day(self):
+        '''VIP剩余天数'''
+        data_delta = self.vip_end_date - date.today()
+        if data_delta.days <= 0:
+            return 0
+        else:
+            return data_delta.days
 
     def to_dict(self):
         return {
