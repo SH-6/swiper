@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+
 # 设置环境
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -75,6 +76,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'swiper.wsgi.application'
 
+#Django 默认缓存配置
+# CACHES = {
+#     'default': {
+#         'BACKEND':'django.core.cache.backends.locmem.LocMemCache'
+#     }
+# }
+
+# django-redis配置
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/9",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PICKLE_VERSION": -1,
+        }
+    }
+}
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -121,3 +141,54 @@ USE_TZ = False
 
 # STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'medias')
+
+LOGGING = {'version': 1, 'disable_existing_loggers': True,
+           # 格式配置
+           'formatters': {
+               'simple': {
+                   'format': '%(asctime)s %(module)s.%(funcName)s: % (message)s',
+                   'datefmt': '%Y-%m-%d %H:%M:%S',
+               },
+               'verbose': {
+                   'format': ('%(asctime)s %(levelname)s [%(process)d-% (threadName)s] '
+                              '%(module)s.%(funcName)s line %(lineno)d: % (message)s'),
+                   'datefmt': '%Y-%m-%d %H:%M:%S',
+               }
+           },
+           # handlers配置
+           'handlers': {
+               'console': {
+                   'class': 'logging.StreamHandler',
+                   'level': 'DEBUG' if DEBUG else 'WARNING'
+               },
+               'info': {
+                   'class': 'logging.handlers.TimedRotatingFileHandler',
+                   'filename': f'{BASE_DIR}/logs/info.log',  # 日志保存了路径
+                   'when': 'D',  # 每天切割日志
+                   'backupCount': 30,  # 日志保留30天
+                   'formatter': 'simple',
+                   'level': 'DEBUG' if DEBUG else 'INFO',
+               },
+               'error': {'class': 'logging.handlers.TimedRotatingFileHandler',
+                         'filename': f'{BASE_DIR}/logs/error.log',  # 日志保存记录
+                         'when': 'W0',  # 每周切割日志
+                         'backupCount': 4,  # 日志保留4周
+                         'formatter': 'verbose',
+                         'level': 'WARNING' if DEBUG else 'ERROR',
+                         }
+           },
+           # loggers配置
+           'loggers': {
+               'django': {
+                   'handlers': ['console'],
+               },
+               'inf': {'handlers': ['info'],
+                       'propagate': True,
+                       'level': 'INFO',
+                       },
+               'err': {'handlers': ['error'],
+                       'propagate': True,
+                       'level': 'WARNING',
+                       }
+           }
+           }

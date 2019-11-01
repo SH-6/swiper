@@ -1,5 +1,6 @@
 import os
 import random
+import logging
 
 import requests
 from django.core.cache import cache
@@ -10,6 +11,7 @@ from libs.qn_cloud import upload_to_qn
 from worker import celery_app
 from common import keys
 
+inf_log = logging.getLogger('inf')
 
 def generate_random_number(length=6):
     '''产生一个指定长度的随机数'''
@@ -23,13 +25,14 @@ def send_vcode(phonenum):
     # 生成一个验证码
     vcode = generate_random_number()
     cache.set(keys.VCODE_KEY % phonenum, vcode, 180)  # 将vcoe写入缓存180s后过期
-    print('vcode: %s' % vcode)
+    inf_log.debug('vcode: %s' % vcode)
+
     # 整理参数
     params = cfg.YZX_PARAMS.copy()
     params['param'] = vcode
     params['mobile'] = phonenum
 
-    # 调用第三方平台的接口,发送验证码
+    #调用第三方平台的接口,发送验证码
     resp = requests.post(cfg.YZX_API, json=params)
     if resp.status_code == 200:
         result = resp.json()

@@ -1,8 +1,12 @@
+import logging
+
 from django.utils.deprecation import MiddlewareMixin
 
 from common import errors
 from user.models import User
 from libs.http import render_json
+
+err_log = logging.getLogger('err')
 
 
 class UserAuthMiddleware(MiddlewareMixin):
@@ -31,4 +35,5 @@ class UserAuthMiddleware(MiddlewareMixin):
 class LogicErrMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
         if isinstance(exception, errors.LogicError):
+            err_log.error(f'LogicErr:{request.user.id}:{exception.data}')
             return render_json(data=exception.data, code=exception.code)

@@ -1,3 +1,5 @@
+import logging
+
 from urllib.parse import urlencode
 
 from django.shortcuts import redirect
@@ -12,8 +14,9 @@ from user import logics
 from user.models import User
 from user.forms import ProfileForm
 
+info_log = logging.getLogger('inf')
 
-# Create your views here.
+
 def get_vcode(request):
     '''获取验证码接口'''
     phonenum = request.GET.get('phonenum')
@@ -36,8 +39,10 @@ def submit_vcode(request):
         # 先取出用户,如果存在直接取出,如果不存在直接创建
         try:
             user = User.objects.get(phonenum=phonenum)
+            info_log.info(f'login:{user.id}')
         except User.DoesNotExist:
             user = User.objects.create(phonenum=phonenum, nickname=phonenum)
+            info_log.info(f'register:{user.id}')
 
         # 执行登录流程
         request.session['uid'] = user.id
@@ -78,7 +83,14 @@ def wb_callback(request):
 
 def get_profile(request):
     '''获取个人资料'''
-    profile_data = request.user.profile.to_dict()
+    key = keys.PROFILE_KEY % request.user.id
+    profile_data = cache.get(key)
+    info_log.debug(f'从缓存取数据:{profile_data}')
+    if profile_data is None:
+        profile_data = request.user.profile.to_dict()
+        info_log.debug(f'从数据库取数据{profile_data}')
+        cache.set(key, profile_data)  # 将数据添加到缓存
+        info_log.debug(f'将数据添加到缓存')
     return render_json(profile_data)
 
 
@@ -90,6 +102,7 @@ def set_profile(request):
         profile = form.save(commit=False)  # 通过Form表单创建出model对象,但并不在数据库中创建
         profile.id = request.user.id  # 给profile设置id
         profile.save()  # 保存
+        info_log.debug('更新缓存')
         return render_json(profile.to_dict())
     else:
         raise errors.ProfileErr(form.errors)
