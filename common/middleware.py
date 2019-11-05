@@ -29,7 +29,7 @@ class UserAuthMiddleware(MiddlewareMixin):
             return render_json(code=errors.LoginRequired.code)
         else:
             # 动态为request添加user属性
-            request.user = User.objects.get(id=uid)
+            request.user = User.get(id=uid)
 
 
 class LogicErrMiddleware(MiddlewareMixin):

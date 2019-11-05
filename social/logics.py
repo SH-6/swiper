@@ -2,6 +2,7 @@ import datetime
 
 from django.core.cache import cache
 from swiper import config as cfg
+from libs.cache import rds
 from common import keys
 from user.models import User
 from social.models import Swiped
@@ -109,3 +110,39 @@ def who_like_me(user):
         info['stime'] = str(swp.stime)
         users_info.append(info)
         return users_info
+
+
+def add_swipe_score(view_func):
+    '''给用户增加滑动积分'''
+
+    def warpper(request):
+        response = view_func(request)  # 先执行 View函数
+
+        # 给用户增加积分
+        stype = view_func.__name__
+        score = cfg.SWIPE_SCORE['stype']
+        rds.zincrby(keys.SCORE_RANK, score, request.POST.get('sid'))
+        return response
+
+    return warpper
+
+
+def get_top_n(num):
+    '''获取TopN数据'''
+    origin_data = rds.zrevrange(keys.SCORE_RANK, 0, num - 1, withscores=True)
+
+    # 数据清洗
+    cleaned_data = [[int(uid), int(score)] for uid, score in origin_data]
+
+    # 取出用户
+    uid_list = [uid for uid, _ in cleaned_data]
+    users = User.objects.in_bulk(uid_list)
+
+    #组装结果
+    rank_data = []
+    for uid ,score in cleaned_data:
+        user = users[uid]
+        user_data = user.to_dict()
+        rank_data.append(user_data)
+
+    return rank_data

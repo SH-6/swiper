@@ -2,3 +2,5 @@
 VCODE_KEY = 'Vcode-%s'
 REWIND_TIMES = 'Rewind-%s-%s'
 PROFILE_KEY = 'profile-%s'
+MODEL_KEY = '%s-%s'
+SCORE_RANK = 'Score_Rank'

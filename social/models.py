@@ -3,8 +3,6 @@ from django.db.models import Q
 from common import errors
 
 
-
-
 class Swiped(models.Model):
     STYPE = (
         ('superlike', '上滑'),
@@ -27,8 +25,10 @@ class Swiped(models.Model):
             raise errors.StypeErr
 
         # 记录滑动操作
-        cls.objects.filter(uid=uid, sid=sid).exists()
-        cls.objects.create(uid=uid, sid=sid, stype=stype)
+        if not cls.objects.filter(uid=uid, sid=sid).exists():
+            cls.objects.create(uid=uid, sid=sid, stype=stype)
+        else:
+            raise errors.SwipeRepeat
 
     @classmethod
     def is_like_me(cls, uid, sid):
@@ -52,7 +52,7 @@ class Friend(models.Model):
     def make_friends(cls, uid1, uid2):
         '''建立好友关系'''
         uid1, uid2 = (uid2, uid1) if uid1 > uid2 else (uid1, uid2)
-        cls.objects.get_or_create(uid1=uid1, uid2=uid2)
+        cls.get_or_create(uid1=uid1, uid2=uid2)
         return True
 
     @classmethod

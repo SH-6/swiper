@@ -36,3 +36,4 @@ LastSwipedTimeout = gen_logic_err('LastSwipedTimeout', 1007)  # 上一次滑动�
 RewindTimesLimit = gen_logic_err('RewindTimesLimit', 1008)  # 反悔次数达到上限
 VIPExpired = gen_logic_err('VIPExpired', 1009)  # 会员已过期
 NotHasPerm = gen_logic_err('NotHasPerm', 1010)  # 用户缺少某权限
+SwipeRepeat = gen_logic_err('SwipeRepeat', 1010)  # 重复滑动

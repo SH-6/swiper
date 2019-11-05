@@ -1,8 +1,18 @@
 '''程序逻辑及第三方平台的配置'''
 
+# 返回配置
 DAILY_REWIND_TIMES = 3
 LAST_SWIPED_SECONDS = 300
 
+# 滑动积分配置
+# DISLIKE_SCORE = -5
+# LIKE_SCORE = 5
+# SUPERLIKE_SCORE = 7
+SWIPE_SCORE = {
+    'like': 5,
+    'superlike': 7,
+    'dislike': -5
+}
 
 # 云之讯短信平台配置
 YZX_API = 'https://open.ucpaas.com/ol/sms/sendsms'

@@ -35,7 +35,7 @@ class User(models.Model):
         '''获取我的个人资料'''
         if not hasattr(self, '_profile'):  # 检查是否创建过_profile
             # 动态为self添加 profile属性
-            self._profile, _ = Profile.objects.get_or_create(id=self.id)
+            self._profile, _ = Profile.get_or_create(id=self.id)
         return self._profile
 
     @property
@@ -43,7 +43,7 @@ class User(models.Model):
         '''用户对应的 VIP'''
         if not hasattr(self, '_vip'):  # 检查是否创建过_vip
             # 动态为self添加 _vip属性
-            self._vip, _ = Vip.objects.get(id=self.id)
+            self._vip, _ = Vip.get(id=self.id)
         return self._vip
 
     def vip_remain_day(self):

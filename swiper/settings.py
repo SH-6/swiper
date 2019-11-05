@@ -76,7 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'swiper.wsgi.application'
 
-#Django 默认缓存配置
+# Django 默认缓存配置
 # CACHES = {
 #     'default': {
 #         'BACKEND':'django.core.cache.backends.locmem.LocMemCache'
@@ -103,6 +103,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+}
+
+# Redis 配置
+REDIS = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 9,
 }
 
 # Password validation

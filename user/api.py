@@ -38,7 +38,7 @@ def submit_vcode(request):
     if cached_vcoed == vcode:
         # 先取出用户,如果存在直接取出,如果不存在直接创建
         try:
-            user = User.objects.get(phonenum=phonenum)
+            user = User.get(phonenum=phonenum)
             info_log.info(f'login:{user.id}')
         except User.DoesNotExist:
             user = User.objects.create(phonenum=phonenum, nickname=phonenum)
@@ -72,7 +72,7 @@ def wb_callback(request):
 
     # 执行登良注册流程
     try:
-        user = User.objects.get(phonenum=user_info['phonenum'])
+        user = User.get(phonenum=user_info['phonenum'])
     except User.DoesNotExist:
         user = User.objects.create(**user_info)
 
